@@ -82,6 +82,13 @@
   color: #f1f1f1;
   font-weight: bold;
 }
+.modal-backdrop {
+  z-index: 1040 !important; /* Ensure it's behind the modal */
+}
+
+.modal {
+  z-index: 1050 !important; /* Ensure it's above the backdrop */
+}
 
 /* Styling for sidenav links */
 .sidenav a {

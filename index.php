@@ -47,14 +47,30 @@ session_start();
     &#9776; <!-- Hamburger icon -->
   </div>
        <!-- Logout Link -->
-<div class="logout">
-    <a href="logout.php" id="logoutLink">Logout</a>
+       <div class="logout" style="font-family: 'Poppins','serif';">
+  <form method="POST" action="logout.php" id="logoutForm">
+    <button type="button" id="logoutLink" class="btn custom-btn">
+      Logout
+    </button>
+  </form>
+
+  <!-- Alert box placeholder -->
+  <div id="logoutAlert" class="alert alert-warning alert-dismissible fade" role="alert" style="display:none; margin-top: 10px;">
+    <strong>Are you sure you want to logout?</strong>
+    <button type="button" class="btn btn-danger btn-sm" onclick="document.getElementById('logoutForm').submit();">
+      Confirm Logout
+    </button>
+    <button type="button" class="btn btn-secondary btn-sm" onclick="dismissLogoutAlert();">
+      Cancel
+    </button>
+  </div>
 </div>
+
 
   </div>
 
   <!-- Main Content Area with Centered and Responsive Table -->
-  <div style="margin-left: 0px; padding: 100px; background-color: grey; min-height: 100vh;">
+  <div style="margin-left: 0px; padding: 100px; background-color: white ; min-height: 100vh;">
   <?php if (isset($_SESSION['username'])): ?>
     <div style="margin-left: 220px; padding: 0px;">
         <h3>Welcome, <?php echo htmlspecialchars($_SESSION['username']); ?>!</h3>
@@ -73,31 +89,98 @@ session_start();
                     </tr>
                 </thead>
                 <tbody>
-                    <?php while ($row = mysqli_fetch_assoc($result)): ?>
-                        <tr>
-                            <td><?php echo htmlspecialchars($row['Admin_name']); ?></td>
-                            <td><?php echo htmlspecialchars($row['role']); ?></td>
-                            <td><?php echo htmlspecialchars($row['registration_time']); ?></td>
-                            <td>
-    <a href="edit_user.php?id=<?php echo $row['id']; ?>" class="btn btn-sm custom-btn" 
-       onclick="return confirm('Are you sure you want to edit this user?');">Edit</a>
-    <a href="delete_user.php?id=<?php echo $row['id']; ?>" class="btn btn-sm custom-btn" 
-       onclick="return confirm('Are you sure you want to delete this user?');">Delete</a>
-</td>
+  <?php while ($row = mysqli_fetch_assoc($result)): ?>
+    <tr>
+      <td><?php echo htmlspecialchars($row['Admin_name']); ?></td>
+      <td><?php echo htmlspecialchars($row['role']); ?></td>
+      <td><?php echo htmlspecialchars($row['registration_time']); ?></td>
+      <td>
+        <!-- Edit Button -->
+        <button class="btn btn-sm custom-btn" data-bs-toggle="modal" 
+                data-bs-target="#editModal" 
+                onclick="setEditModalData('<?php echo $row['id']; ?>', '<?php echo htmlspecialchars($row['Admin_name']); ?>');">
+          Edit
+        </button>
+        
+        <!-- Delete Button -->
+        <button class="btn btn-sm custom-btn" data-bs-toggle="modal" 
+                data-bs-target="#deleteModal" 
+                onclick="setDeleteModalData('<?php echo $row['id']; ?>', '<?php echo htmlspecialchars($row['Admin_name']); ?>');">
+          Delete
+        </button>
+      </td>
+    </tr>
+  <?php endwhile; ?>
+</tbody>
 
-
-                        </tr>
-                    <?php endwhile; ?>
-                </tbody>
             </table>
         </div>
     </div>
 </div>
 
+<!-- Edit Modal -->
+<!-- Edit Modal -->
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editModalLabel">Edit User</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to edit the user <span id="editUserName"></span>?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button id="confirmEditButton" class="btn custom-btn">Edit</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 
+<!-- Delete Modal -->
+<!-- Delete Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteModalLabel">Delete User</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to delete the user <span id="deleteUserName"></span>?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button id="confirmDeleteButton" class="btn custom-btn">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 
-    <script src="script.js"></script>
+<!-- Logout Confirmation Modal -->
+<div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="logoutModalLabel">Confirm Logout</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to logout?
+      </div>
+      <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+
+        <button id="confirmLogoutButton" class="btn btn-danger">Logout</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script src="script.js"></script>
 </body>
 </html>
